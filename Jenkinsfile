@@ -16,7 +16,7 @@ node {
       def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
       def imgFullName = "${registry}/${imgName}:${imgTag}"
 
-      def goImage = "golang:1.10"
+      def goImage = "golang:1.11"
 
       stage("dependencies") {
         def workspace = pwd()
