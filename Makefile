@@ -9,13 +9,10 @@ IGNORED_PACKAGES := /vendor/
 all: build
 
 .PHONY: build
-build: .GOPATH/.ok
+build:
 	$Q CGO_ENABLED=0 GOOS=linux go build -a --installsuffix dist -o main $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)
 
-clean:
-	$Q rm -rf bin .GOPATH
-
-test: .GOPATH/.ok
+test:
 	$Q go test $(if $V,-v) -i -race $(allpackages) # install -race libs to speed up next run
 ifndef CI
 	$Q go vet $(allpackages)

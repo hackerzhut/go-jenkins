@@ -20,7 +20,6 @@ node {
 
       stage("dependencies") {
         def workspace = pwd()
-        sh 'make clean'
 
       }
 
