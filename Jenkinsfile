@@ -26,6 +26,7 @@ node {
       stage("test") {
         docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
           docker.image(goImage).inside("-v ${workspace}:/src -w /src --link ${c.id}:db") {
+              sh 'go mod download'
               sh 'make test'
             //sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
           }

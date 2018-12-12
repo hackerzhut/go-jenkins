@@ -10,16 +10,12 @@ all: build
 
 .PHONY: build
 build:
-	$Q CGO_ENABLED=0 GOOS=linux go build -a --installsuffix dist -o main $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)
+	$Q CGO_ENABLED=0 GOOS=linux GO111MODULE=on go build -a --installsuffix dist -o main $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)
 
 test:
-	$Q go test $(if $V,-v) -i -race $(allpackages) # install -race libs to speed up next run
+	$Q GO111MODULE=on go test $(if $V,-v) -i -race $(allpackages) # install -race libs to speed up next run
 ifndef CI
-	$Q go vet $(allpackages)
-	$Q GODEBUG=cgocheck=2 go test -race $(allpackages)
+	$Q GODEBUG=cgocheck=2 GO111MODULE=on go test -race $(allpackages)
 else
-	$Q ( go vet $(allpackages); echo $$? ) | \
-	    tee .GOPATH/test/vet.txt | sed '$$ d'; exit $$(tail -1 .GOPATH/test/vet.txt)
-	$Q ( GODEBUG=cgocheck=2 go test -v -race $(allpackages); echo $$? ) | \
-	    tee .GOPATH/test/output.txt | sed '$$ d'; exit $$(tail -1 .GOPATH/test/output.txt)
+	$Q GODEBUG=cgocheck=2 GO111MODULE=on go test -race $(allpackages)
 endif
