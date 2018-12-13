@@ -23,7 +23,8 @@ node {
 
         stage("test") {
             docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
-                sh "export DB_CONNECTION='host=${c.id} port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
+                def uri = "'host=${c.id} port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
+                def buildArgs = "--build-arg DB_CONNECTION=${uri} ."
                 def img = docker.build(imgFullName, ".")
                 // docker.image(goImage).inside("--link ${c.id}:db") {
                 //     sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
@@ -33,7 +34,6 @@ node {
         }
 
         stage("build") {
-            //to-do change go image
             // docker.image(goImage).inside("-v ${workspace}:/src -w /src") {
             //     sh 'make build'
             // }
