@@ -20,8 +20,8 @@ node {
         }
 
         // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
-        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-        gitShortCommit = gitCommit[-8..-1]
+        def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        def gitShortCommit = gitCommit[-8..-1]
 
         stage("test") {
             docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
