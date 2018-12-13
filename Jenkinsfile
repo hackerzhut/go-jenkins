@@ -2,10 +2,6 @@ node {
   ws {
     try {
 
-        // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
-        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-        gitShortCommit = gitCommit[-8..-1]
-
         // Setup variables
         def appName = "contacts"
         def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
@@ -21,6 +17,10 @@ node {
         stage("scm") {
             checkout scm
         }
+
+        // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
+        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        gitShortCommit = gitCommit[-8..-1]
 
         stage("test") {
             docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
