@@ -20,10 +20,10 @@ func init() {
 	dbURI := os.Getenv("DB_CONNECTION")
 
 	if dbURI == "" {
-		username := os.Getenv("db_user")
-		password := os.Getenv("db_pass")
-		dbName := os.Getenv("db_name")
-		dbHost := os.Getenv("db_host")
+		username := "postgres"
+		password := "postgres"
+		dbName := "postgres"
+		dbHost := "db"
 
 		dbURI = fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, username, dbName, password)
 	}
