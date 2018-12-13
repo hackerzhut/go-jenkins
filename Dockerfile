@@ -1,10 +1,14 @@
 FROM golang:1.11.1-alpine3.8 as builder
 LABEL stage=intermediate
 
+ARG DB_CONNECTION 
+
 ENV PATH /go/bin:/usr/local/go/bin:$PATH
 ENV GOPATH /go
 ENV GO111MODULE=on
 ENV DB_CONNECTION=${DB_CONNECTION}
+
+RUN echo "DB_CONNECTION value is $DB_CONNECTION"
 
 RUN set -x \
     && apk add --update --no-cache --virtual .build-deps \
