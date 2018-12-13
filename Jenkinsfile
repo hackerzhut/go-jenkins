@@ -4,24 +4,22 @@ node {
 
         // Setup variables
         def appName = "contacts"
-        def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
         def imgName = "contacts-api"
-        // Path we will mount the project to for the Docker container
-        String goPath = "/go/src/github.com/hackerzhut/${applicationName}"
-      
-        // def imgFullName = "${registry}/${imgName}:${imgTag}"
-        def imgFullName = "${imgName}:${imgTag}"
+        String goPath = "/go/src/github.com/hackerzhut/${appName}"
         def goImage = "golang:1.11.1-alpine3.8"
 
 
         stage("scm") {
-            // checkout scm
-            git 'https://github.com/hackerzhut/go-jenkins'
+            checkout scm
+            // git 'https://github.com/hackerzhut/go-jenkins'
         }
 
         // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
         def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         def gitShortCommit = gitCommit[-8..-1]
+        def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
+        // def imgFullName = "${registry}/${imgName}:${imgTag}"
+        def imgFullName = "${imgName}:${imgTag}"
 
         stage("test") {
             docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
