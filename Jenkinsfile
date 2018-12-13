@@ -15,7 +15,8 @@ node {
 
 
         stage("scm") {
-            checkout scm
+            // checkout scm
+            git 'https://github.com/hackerzhut/go-jenkins'
         }
 
         // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
