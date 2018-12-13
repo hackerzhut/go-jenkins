@@ -25,7 +25,9 @@ func init() {
 		dbName := "postgres"
 		dbHost := "db"
 
-		dbURI = fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, username, dbName, password)
+		//host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable
+
+		dbURI = fmt.Sprintf("host=%s port=5432 user=%s dbname=%s password=%s sslmode=disable", dbHost, username, dbName, password)
 	}
 
 	fmt.Println("*********", dbURI)

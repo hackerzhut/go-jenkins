@@ -39,8 +39,8 @@ node {
         }
 
         stage("publish") {
-            def buildArgs = "."
-            def img = docker.build(imgFullName, buildArgs)
+            // def buildArgs = "."
+            // def img = docker.build(imgFullName, buildArgs)
         }
 
         stage("deploy") {
