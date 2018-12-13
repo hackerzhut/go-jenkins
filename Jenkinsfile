@@ -1,52 +1,50 @@
 node {
   ws {
     try {
-      stage("scm") {
-      // This is to allow for easier import paths in go.
-        git 'https://github.com/hackerzhut/go-jenkins'
-      }
 
-      def registry = "test.io"
-      def imgName = "go-contacts-api"
+        // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
+        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        gitShortCommit = gitCommit[-8..-1]
 
-      // https://github.com/deis/workflow-cli/blob/master/Jenkinsfile
-      gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-      gitShortCommit = gitCommit[-8..-1]
+        // Setup variables
+        def appName = "contacts"
+        def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
+        def imgName = "contacts-api"
+        // Path we will mount the project to for the Docker container
+        String goPath = "/go/src/github.com/hackerzhut/${applicationName}"
+      
+        // def imgFullName = "${registry}/${imgName}:${imgTag}"
+        def imgFullName = "${imgName}:${imgTag}"
+        def goImage = "golang:1.11.1-alpine3.8"
 
-      def imgTag = "${env.BUILD_NUMBER}-${gitShortCommit}"
-      def imgFullName = "${registry}/${imgName}:${imgTag}"
 
-      def goImage = "golang:1.11"
-
-      stage("dependencies") {
-        def workspace = pwd()
-
-      }
-
-      stage("test") {
-        docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
-          docker.image(goImage).inside("-v ${workspace}:/src -w /src --link ${c.id}:db") {
-              sh 'go mod download'
-              sh 'make test'
-            //sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
-          }
+        stage("scm") {
+            checkout scm
         }
-      }
 
-      stage("build") {
-        docker.image(goImage).inside("-v ${workspace}:/src -w /src") {
-          sh 'make build'
+        stage("test") {
+            docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
+                docker.image(goImage).inside("--link ${c.id}:db") {
+                    sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
+                    sh 'make test'           
+                }
+            }
         }
-      }
 
-      stage("publish") {
-        def buildArgs = "."
-        def img = docker.build(imgFullName, buildArgs)
-      }
+        stage("build") {
+            docker.image(goImage).inside("-v ${workspace}:/src -w /src") {
+                sh 'make build'
+            }
+        }
 
-      stage("deploy") {
+        stage("publish") {
+            def buildArgs = "."
+            def img = docker.build(imgFullName, buildArgs)
+        }
 
-      }
+        stage("deploy") {
+
+        }
       
     } catch (InterruptedException e) {
       throw e

@@ -1,0 +1,13 @@
+.editorconfig
+.git
+.idea
+.GOPATH
+AUTHORS.md
+CONTRIBUTING.md
+LICENSE
+NOTICE
+README.md
+arm/
+powerpc/
+mips/
+bin/

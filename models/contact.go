@@ -42,7 +42,10 @@ func (contact *Contact) Create() map[string]interface{} {
 		return resp
 	}
 
-	GetDB().Create(contact)
+	d := GetDB().Create(contact)
+	if len(d.GetErrors()) > 0 {
+		return nil
+	}
 
 	resp := u.Message(true, "success")
 	resp["contact"] = contact
