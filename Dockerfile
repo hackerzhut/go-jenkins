@@ -28,7 +28,7 @@ COPY . .
 
 RUN go fmt ./...\
     && make test \
-    && make static \
+    && make build \
     && apk del .build-deps \
     && echo "Build complete."
 
@@ -43,12 +43,11 @@ FROM scratch
 WORKDIR /app
 
 # COPY --from=builder /go/bin/gatekeeper .
-COPY --from=builder /app/output/gatekeeper .
-COPY --from=builder /app/configs ./configs
+COPY --from=builder /app/main .
 COPY --from=builder /etc/ssl/certs/ /etc/ssl/certs
 COPY --from=builder /etc/passwd /etc/passwd
 
 USER gkuser
 
-ENTRYPOINT [ "./gatekeeper" ]
+ENTRYPOINT [ "./contacts" ]
 EXPOSE 8090
