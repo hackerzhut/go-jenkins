@@ -6,7 +6,7 @@ node {
         def appName = "contacts"
         def imgName = "contacts-api"
         String goPath = "/go/src/github.com/hackerzhut/${appName}"
-        def goImage = "golang:1.11.1-alpine3.8"
+        def goImage = "golang:1.11.1"
 
 
         stage("scm") {
@@ -23,13 +23,12 @@ node {
 
         stage("test") {
             docker.image("postgres").withRun("-p 5432:5432 -e POSTGRES_PASSWORD=postgres") { c -> 
-                def uri = "'host=${c.id} port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
-                def buildArgs = "--build-arg DB_CONNECTION=${uri} ."
-                def img = docker.build(imgFullName, ".")
-                // docker.image(goImage).inside("--link ${c.id}:db") {
-                //     sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
-                //     sh 'make test'           
-                // }
+               // def buildArgs = "--build-arg DB_CONNECTION=${uri} ."
+                // def img = docker.build(imgFullName, ".")
+                docker.image(goImage).inside("--link ${c.id}:db") {
+                    sh "export DB_CONNECTION='host=db port=5432 dbname=postgres user=postgres password=postgres sslmode=disable'"
+                    sh 'make test'           
+                }
             }
         }
 
